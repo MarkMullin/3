@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Something is dead</title>
+  <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css'><link rel="stylesheet" href="./style.css">
+  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://use.fontawesome.com/3629bc097b.js"></script>
+</head>
+<body>
+<link href='https://fonts.googleapis.com/css?family=Inconsolata:700' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Roboto+Mono:300,700' rel='stylesheet' type='text/css'>
+<section>
+  <div class="section intro container">
+      <div class="">
+          <div class="row">
+              <div class="col-xs-8 col-xs-offset-2">
+                  <h1 class="text-center">something inside me <s>died</s></h1>
+                  <p class="lead text-center">And I had to be strong to keep myself alive</p>
+                </div>
+            </div>
+            <p class="bottom-text">Scroll down to see more</p>
+
+
+            <div class="wrapper">
+
+                <div class="music music-controls">
+                  <span class="seek-bar">
+                    <span class="knot"></span>
+                  </span>
+                  <span class="song-buffer"></span>
+                  <span class="song-current-time">00:00</span><span class="play">
+                  <i class="fa fa-play" aria-hidden="true"></i>
+                  <span class="song-duration">00:00</span>
+                  </span>
+                </div>
+              </div>
+              <audio controls id="music-player" preload="auto">
+                <source src="iknow.mp3" type="audio/mpeg">
+              Your browser does not support the audio element.
+              </audio>
+              
+        </div>
+  </div>
+</section>
+
+<section>
+  <div class="section container">
+      <div class="row">
+          <div class="col-xs-8 col-xs-offset-2">
+              <h1 class="">I know myself very well now</h1>
+              <p>And I don't trust people,
+                I know them too well</p>
+            </div>
+        </div>
+  </div>
+</section>
+
+
+<section>
+  <div class="section container">
+    <div class="col-xs-8 col-xs-offset-2">
+      <h1 class="">They don't know do they?</h1>
+      <p>About the long night shifts alone</p>
+      <p>About the years of keeping yourself company</p>
+      <p>The hours of indecision, self doubt,
+        The intense depression</p>
+    </div>
+  </div>
+</section>
+<!-- partial -->
+<script>
+var _audio = $("#music-player")[0],
+  _audioDuration = 0,
+  _currentTime = 0,
+  _buffered = 0,
+  _buuferPlayTime = 5;
+
+$(".music-controls .fa").on("click", function() {
+  var $this = $(this);
+  $(".music-controls .seek-bar").css("animation-play-state", "running");
+  if ($this.hasClass("fa-play")) {
+    $this.removeClass("fa-play").addClass("fa-pause");
+    _audio.play();
+    $(".music-controls .seek-bar").addClass("is-animate");
+  } else {
+    $(".music-controls .seek-bar").css("animation-play-state", "paused");
+    $this.removeClass("fa-pause").addClass("fa-play");
+    $(".music-controls .seek-bar");
+    _audio.pause();
+  }
+});
+
+var _setAudioDuration = setInterval(function() {
+  _audioDuration = _audio.duration;
+  if (_audioDuration > 0) {
+    $(".song-duration").html(formatAudio(_audioDuration)).css("opacity", 1);
+    $(".song-current-time").css("opacity", 1);
+    clearInterval(_setAudioDuration);
+  }
+}, 500);
+
+var _animateSeek = setInterval(function() {
+  if ($(".fa").hasClass("fa-pause")) {
+    var _percent = (_audio.currentTime * 100) / _audioDuration;
+    $(".is-animate").css("width", _percent + "%");
+    
+    $(".song-current-time").html(currentTime(_audio.currentTime));
+  }
+}, 500);
+
+_audio.onended = function() {
+  setTimeout(function() {
+    _audio.currentTime = 0;
+    $(".song-current-time").html(currentTime(_audio.currentTime));
+    $(".is-animate").css("width", "0%");
+    
+    $(".music-controls .fa").removeClass("fa-pause").addClass("fa-play");
+  }, 500);
+};
+
+var _checkBuffer = setInterval(function() {
+  if (_audioDuration > 0) {
+    _buffered = (_audio.buffered.end(_audio.buffered.length - 1) * 100) / _audio.duration;
+
+    $(".music-controls .song-buffer").css("width", _buffered + "%");
+    if (_buffered > _buuferPlayTime) {
+      $(".wrapper").addClass("showMP");
+      $(".fa").css({
+        "opacity": "1",
+        "pointer-events": "auto"
+      });
+    }
+    if (_buffered == 100) {
+      clearInterval(_checkBuffer);
+    }
+  }
+}, 500);
+
+function currentTime(songActivity){
+  var _mprefix = "";
+  var _sprefix = "";
+  var _secs = songActivity;
+  var _min = Math.floor(_secs/60);
+
+  var _time = Math.floor(((_secs/60) - _min )*60);
+  if(_min < 10){
+    _mprefix = "0";
+  }
+  if(_time < 10){
+    _sprefix = "0";
+  }
+  return _mprefix + _min + ":" + _sprefix + _time;
+}
+
+function formatAudio(songActivity) {
+  var _mprefix = "",
+    _sprefix = "",
+    _secs = songActivity,
+    _min = Math.floor(_secs / 60),
+    _time = Math.floor(((_secs / 60) - _min) * 60);
+
+  if (_min < 10) {
+    _mprefix = "0";
+  }
+  if (_time < 10) {
+    _sprefix = "0";
+  }
+  return _mprefix + _min + ":" + _sprefix + _time;
+}
+</script>
+  
+
+</body>
+</html>
